@@ -1,5 +1,13 @@
-import { App, ButtonComponent, Editor, MarkdownRenderer, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting, TFile, TFolder } from 'obsidian';
-import { SerentipitySettingTab } from './settings';
+import { 
+    App, 
+    ButtonComponent, 
+    MarkdownRenderer, 
+    Modal, 
+    Notice, 
+    Plugin, 
+    TFile, 
+    TFolder } from 'obsidian';
+import { SerendipitySettingTab } from './settings';
 
 interface SerendipityPluginSettings {
     sourceDirectory: string;
@@ -16,10 +24,9 @@ export default class SerendipityPlugin extends Plugin {
 		await this.loadSettings();
 
         this.app.workspace.on('layout-ready', this.onAppOpen);
-        // this.app.workspace.on('layout-change', this.onAppOpen);
 
 		// This adds a settings tab so the user can configure various aspects of the plugin
-		this.addSettingTab(new SerentipitySettingTab(this.app, this));
+		this.addSettingTab(new SerendipitySettingTab(this.app, this));
 	}
 
 	onunload() {
@@ -36,14 +43,12 @@ export default class SerendipityPlugin extends Plugin {
     }
 
     async getRandomEntry() {
-        // TODO: parameterize this so that it only gets files from the specified directory
+        let mdFilesInVault: TFile[];
         const sourceDirectory = this.app.vault.getAbstractFileByPath(this.settings.sourceDirectory);
-        let mdFilesInVault: TFile[] = this.app.vault.getMarkdownFiles();
         
-        console.log('source directory, instance of TFolder?', sourceDirectory, sourceDirectory instanceof TFolder);
-
         if (!sourceDirectory || !(sourceDirectory instanceof TFolder)) {
             new Notice('Invalid source directory. Resetting it to the vault root');
+            mdFilesInVault = this.app.vault.getMarkdownFiles();
         } else {
             mdFilesInVault = sourceDirectory
                 .children
@@ -54,7 +59,6 @@ export default class SerendipityPlugin extends Plugin {
             return null;
         }
 
-        console.log('Getting random entry');
         const randomIndex = Math.floor(Math.random() * mdFilesInVault.length);
         return mdFilesInVault[randomIndex];
     }    
@@ -83,12 +87,13 @@ class SerendipityModal extends Modal {
 
         contentEl.createEl('h2', { text: this.file.name });
         const contentContainer = contentEl.createDiv({ cls: 'markdown-preview' });
-        // MarkdownRenderer.renderMarkdown(fileContents, contentContainer, this.file.path, this);
+
+        // TODO: Add 'components" as expected as the last argument. app console warns about potential memory issues of using "this"
         MarkdownRenderer.render(this.app, fileContents, contentContainer, this.file.path, this);
 
         const footerEl = contentEl.createDiv({ cls: 'modal-footer' });
-        // MarkdownRenderer.render(this.app, `[[${this.file.name}]]`, footerEl, this.file.path, this);
 
+        // TODO: Beautify the buttons. They currently sit awkwardly next to each other in the footer
         new ButtonComponent(footerEl)
             .setButtonText('Open in vault')
             .onClick(() => {
@@ -108,29 +113,3 @@ class SerendipityModal extends Modal {
         contentEl.empty();
     }
 }
-
-// class SerentipitySettingTab extends PluginSettingTab {
-// 	plugin: SerendipityPlugin;
-
-// 	constructor(app: App, plugin: SerendipityPlugin) {
-// 		super(app, plugin);
-// 		this.plugin = plugin;
-// 	}
-
-// 	display(): void {
-// 		const {containerEl} = this;
-
-// 		containerEl.empty();
-
-// 		new Setting(containerEl)
-// 			.setName('Setting #1')
-// 			.setDesc('It\'s a secret')
-// 			.addText(text => text
-// 				.setPlaceholder('Enter your secret')
-// 				.setValue(this.plugin.settings.mySetting)
-// 				.onChange(async (value) => {
-// 					this.plugin.settings.mySetting = value;
-// 					await this.plugin.saveSettings();
-// 				}));
-// 	}
-// }

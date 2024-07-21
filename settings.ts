@@ -1,7 +1,7 @@
 import { App, PluginSettingTab, Setting } from 'obsidian';
 import SerendipityPlugin from './main';
 
-export class SerentipitySettingTab extends PluginSettingTab {
+export class SerendipitySettingTab extends PluginSettingTab {
     plugin: SerendipityPlugin;
 
     constructor(app: App, plugin: SerendipityPlugin) {
@@ -14,13 +14,14 @@ export class SerentipitySettingTab extends PluginSettingTab {
 
         containerEl.empty();
 
-        containerEl.createEl('h2', { text: 'Random Journal Settings' });
+        containerEl.createEl('h2', { text: 'Serenditpity Settings' });
 
         new Setting(containerEl)
             .setName('Source Directory')
             .setDesc('The directory from which to pick a random file from at start-up')
             .addText(text => text
-                .setPlaceholder('Enter the directory path')
+                // TODO: Implement autocomplete for directories
+                .setPlaceholder('Enter the directory name. e.g. Journal, or Books')
                 .setValue(this.plugin.settings.sourceDirectory)
                 .onChange(async (value) => {
                     this.plugin.settings.sourceDirectory = value;
