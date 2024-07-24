@@ -6,3 +6,27 @@ available in the app when your plugin is enabled.
 If your plugin does not need CSS, delete this file.
 
 */
+.modal {
+    padding: 0
+}
+
+.modal-content {
+    margin: 0;
+    padding: 1.5em;
+}
+
+.modal-close-button {
+    display: none;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    padding: 1em 0;
+    background-color: var(--background-primary);
+    border-bottom: 1px solid var(--background-modifier-active-hover);
+
+}

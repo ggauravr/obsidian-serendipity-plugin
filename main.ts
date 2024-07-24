@@ -1,6 +1,7 @@
 import { 
     App, 
     ButtonComponent, 
+    Component, 
     MarkdownRenderer, 
     Modal, 
     Notice, 
@@ -8,6 +9,7 @@ import {
     TFile, 
     TFolder } from 'obsidian';
 import { SerendipitySettingTab } from './settings';
+import { urlToHttpOptions } from 'url';
 
 interface SerendipityPluginSettings {
     sourceDirectory: string;
@@ -25,7 +27,6 @@ export default class SerendipityPlugin extends Plugin {
 
         this.app.workspace.on('layout-ready', this.onAppOpen);
 
-		// This adds a settings tab so the user can configure various aspects of the plugin
 		this.addSettingTab(new SerendipitySettingTab(this.app, this));
 	}
 
@@ -34,9 +35,8 @@ export default class SerendipityPlugin extends Plugin {
 	}
 
     onAppOpen = async () => {
-        console.log('App is open');
-
         const randomMdFile = await this.getRandomEntry();
+
         if (randomMdFile) {
             new SerendipityModal(this.app, randomMdFile).open();
         }
@@ -48,6 +48,7 @@ export default class SerendipityPlugin extends Plugin {
         
         if (!sourceDirectory || !(sourceDirectory instanceof TFolder)) {
             new Notice('Invalid source directory. Resetting it to the vault root');
+
             mdFilesInVault = this.app.vault.getMarkdownFiles();
         } else {
             mdFilesInVault = sourceDirectory
@@ -56,6 +57,7 @@ export default class SerendipityPlugin extends Plugin {
         }
 
         if (mdFilesInVault.length === 0) {
+            new Notice('No markdown files found in the specified directory');
             return null;
         }
 
@@ -85,31 +87,48 @@ class SerendipityModal extends Modal {
         const { contentEl } = this;
         const fileContents = await this.app.vault.read(this.file);
 
-        contentEl.createEl('h2', { text: this.file.name });
-        const contentContainer = contentEl.createDiv({ cls: 'markdown-preview' });
-
-        // TODO: Add 'components" as expected as the last argument. app console warns about potential memory issues of using "this"
-        MarkdownRenderer.render(this.app, fileContents, contentContainer, this.file.path, this);
-
-        const footerEl = contentEl.createDiv({ cls: 'modal-footer' });
+        const header = contentEl.createDiv({ cls: 'modal-header' });
 
         // TODO: Beautify the buttons. They currently sit awkwardly next to each other in the footer
-        new ButtonComponent(footerEl)
-            .setButtonText('Open in vault')
+        const openCta = new ButtonComponent(header)    
+        openCta.setButtonText('Open in vault')
             .onClick(() => {
                 this.app.workspace.getLeaf('tab').openFile(this.file);
                 this.close();
             });
-
-        new ButtonComponent(footerEl)
-            .setButtonText('Close')
+        
+        const closeCta = new ButtonComponent(header)
+        closeCta.setButtonText('Close')
             .onClick(() => {
                 this.close();
             });
+        
+        const contentContainer = contentEl.createDiv({ cls: 'markdown-preview' });
+        const component = new Component();
+        // TODO: Add 'components" as expected as the last argument. app console warns about potential memory issues of using "this"
+        MarkdownRenderer.render(this.app, fileContents, contentContainer, this.file.path, component);
+
+        const footerEl = contentEl.createDiv({ cls: 'modal-footer' });
+        // TODO: Beautify the buttons. They currently sit awkwardly next to each other in the footer
+        // const buttonComponent = new ButtonComponent(footerEl)
+            
+        // buttonComponent.setButtonText('Open in vault')
+        //     .onClick(() => {
+        //         this.app.workspace.getLeaf('tab').openFile(this.file);
+        //         this.close();
+        //     });
     }
 
     onClose() {
         const { contentEl } = this;
         contentEl.empty();
+    }
+
+    onLoad() {
+
+    }
+
+    onUnload() {
+    
     }
 }
