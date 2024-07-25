@@ -24,7 +24,7 @@ export default class SerendipityPlugin extends Plugin {
 	async onload() {
 		await this.loadSettings();
 
-        this.app.workspace.on('layout-ready', this.onAppOpen);
+        this.app.workspace.onLayoutReady(this.onAppOpen);
 
 		this.addSettingTab(new SerendipitySettingTab(this.app, this));
 	}
