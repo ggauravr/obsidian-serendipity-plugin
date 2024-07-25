@@ -1,15 +1,15 @@
 {
-	"name": "obsidian-sample-plugin",
+	"name": "obsidian-serendipity-plugin",
 	"version": "1.0.0",
-	"description": "This is a sample plugin for Obsidian (https://obsidian.md)",
+	"description": "This plugin helps force serendipitous discoveries by displaying random notes from your vault each time you open Obsidian",
 	"main": "main.js",
 	"scripts": {
 		"dev": "node esbuild.config.mjs",
 		"build": "tsc -noEmit -skipLibCheck && node esbuild.config.mjs production",
 		"version": "node version-bump.mjs && git add manifest.json versions.json"
 	},
-	"keywords": [],
-	"author": "",
+	"keywords": ["serendipity", "random", "discovery", "notes", "journal", "nostalgia", "insights"],
+	"author": "gggauravr@gmail.com",
 	"license": "MIT",
 	"devDependencies": {
 		"@types/node": "^16.11.6",
