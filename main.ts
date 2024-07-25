@@ -9,7 +9,6 @@ import {
     TFile, 
     TFolder } from 'obsidian';
 import { SerendipitySettingTab } from './settings';
-import { urlToHttpOptions } from 'url';
 
 interface SerendipityPluginSettings {
     sourceDirectory: string;
