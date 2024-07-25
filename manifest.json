@@ -1,7 +1,7 @@
 {
-	"id": "obsidian-serendipity-plugin",
-	"name": "Obsidian Serendipity Plugin",
-	"version": "1.0.4",
+	"id": "serendipity",
+	"name": "Serendipity",
+	"version": "1.0.5",
 	"minAppVersion": "0.15.0",
 	"description": "This plugin helps force serendipitous discoveries by displaying random notes from your vault each time you open Obsidian",
 	"author": "Gaurav Ramesh",
