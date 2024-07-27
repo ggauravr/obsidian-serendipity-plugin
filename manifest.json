@@ -3,7 +3,7 @@
 	"name": "Serendipity",
 	"version": "1.0.5",
 	"minAppVersion": "0.15.0",
-	"description": "This plugin helps force serendipitous discoveries by displaying random notes from your vault each time you open Obsidian",
+	"description": "Forces serendipitous discoveries by displaying random notes from your vault each time you open the app",
 	"author": "Gaurav Ramesh",
 	"authorUrl": "https://x.com/outofdesk",
 	"fundingUrl": "",
