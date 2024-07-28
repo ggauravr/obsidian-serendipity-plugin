@@ -1,6 +1,6 @@
 {
 	"name": "serendipity",
-	"version": "1.0.5",
+	"version": "1.0.6",
 	"description": "This plugin helps force serendipitous discoveries by displaying random notes from your vault each time you open Obsidian",
 	"main": "main.js",
 	"scripts": {
