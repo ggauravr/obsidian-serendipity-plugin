@@ -6,6 +6,7 @@ import {
     Modal, 
     Notice, 
     Plugin, 
+    TAbstractFile, 
     TFile, 
     TFolder } from 'obsidian';
 import { SerendipitySettingTab } from './settings';
@@ -42,9 +43,10 @@ export default class SerendipityPlugin extends Plugin {
     }
 
     async getRandomEntry() {
-        let mdFilesInVault: TFile[];
+        let mdFilesInVault: TAbstractFile[];
         const sourceDirectory = this.app.vault.getAbstractFileByPath(this.settings.sourceDirectory);
-        
+            
+
         if (!sourceDirectory || !(sourceDirectory instanceof TFolder)) {
             new Notice('Invalid source directory. Resetting it to the vault root');
 
@@ -52,7 +54,7 @@ export default class SerendipityPlugin extends Plugin {
         } else {
             mdFilesInVault = sourceDirectory
                 .children
-                .filter((file) => file instanceof TFile && file.extension === 'md') as TFile[];
+                .filter((file) => file instanceof TFile && file.extension === 'md');
         }
 
         if (mdFilesInVault.length === 0) {
@@ -75,16 +77,16 @@ export default class SerendipityPlugin extends Plugin {
 }
 
 class SerendipityModal extends Modal {
-    private file: TFile;
+    private file: TAbstractFile;
 
-	constructor(app: App, file: TFile) {
+	constructor(app: App, file: TAbstractFile) {
 		super(app);
         this.file = file;
 	}
 
     async onOpen() {
         const { contentEl } = this;
-        const fileContents = await this.app.vault.read(this.file);
+        const fileContents = this.file instanceof TFile ? await this.app.vault.read(this.file): '';
 
         const header = contentEl.createDiv({ cls: 'modal-header' });
 
@@ -92,7 +94,7 @@ class SerendipityModal extends Modal {
         const openCta = new ButtonComponent(header)    
         openCta.setButtonText('Open in vault')
             .onClick(() => {
-                this.app.workspace.getLeaf('tab').openFile(this.file);
+                this.file instanceof TFile && this.app.workspace.getLeaf('tab').openFile(this.file);
                 this.close();
             });
         
