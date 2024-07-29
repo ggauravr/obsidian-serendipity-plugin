@@ -7,7 +7,8 @@ In short, it helps force serendipitous discoveries by displaying random notes fr
 
 ### Features
 - Displays a random note from our vault in a modal when Obsidian is opened
-- Customizable settings to specify journal file locations to choose a random note from
+- Customizable settings to specify a directory to pick a random note from
+- Customizable settings to specify a directory to exclude picking random notes from
 - Themed UI that adapts to your Obsidian theme
 - Direct link to open the source file of the displayed entry in a new tab
 
@@ -26,6 +27,7 @@ To configure the plugin settings -
 1. Go to Settings > Community Plugins
 2. Find Serendipity in the list and click on the gear icon
 3. Set the path to the directory you want the plugin to pick random notes from(Enter the path relative to the root of the vault)
+4. Set the path to the directory you want the plugin exclude while picking random notes from(Enter the path relative to the root of the vault). If a valid source directory is specified, this setting will be ignored
 
 ### Development/Contribution
 If you want to contribute to Serendipity, or use it as a base for your own plugin -

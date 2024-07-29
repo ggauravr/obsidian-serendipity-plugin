@@ -13,10 +13,12 @@ import { SerendipitySettingTab } from './settings';
 
 interface SerendipityPluginSettings {
     sourceDirectory: string;
+    excludeDirectory: string;
 }
 
 const DEFAULT_SETTINGS: SerendipityPluginSettings = {
-    sourceDirectory: ''
+    sourceDirectory: '',
+    excludeDirectory: ''
 }
 
 export default class SerendipityPlugin extends Plugin {
@@ -44,13 +46,24 @@ export default class SerendipityPlugin extends Plugin {
 
     async getRandomEntry() {
         let mdFilesInVault: TAbstractFile[];
-        const sourceDirectory = this.app.vault.getAbstractFileByPath(this.settings.sourceDirectory);
-            
+        const sourceDirectory = this.app.vault.getAbstractFileByPath(this.settings.sourceDirectory);  
+        const excludeDirectory = this.app.vault.getFolderByPath(this.settings.excludeDirectory)
 
         if (!sourceDirectory || !(sourceDirectory instanceof TFolder)) {
-            new Notice('Invalid source directory. Resetting it to the vault root');
+            new Notice('Invalid source directory. Checking for excluded directory instead');
 
+            // if invalid source directory, start with the entire vault
             mdFilesInVault = this.app.vault.getMarkdownFiles();
+
+            if (!excludeDirectory || !(excludeDirectory instanceof TFolder)) {
+                new Notice('Invalid exclude directory. Using all of the vault as source');
+            } else {
+                new Notice(`Excluding files from ${this.settings.excludeDirectory} directory`);
+                // if valid exclude directory, filter out the matching files
+                mdFilesInVault = mdFilesInVault
+                                    .filter((file) => !file.path.startsWith(this.settings.excludeDirectory));
+            }
+            
         } else {
             mdFilesInVault = sourceDirectory
                 .children

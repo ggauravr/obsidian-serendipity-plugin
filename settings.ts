@@ -18,7 +18,7 @@ export class SerendipitySettingTab extends PluginSettingTab {
 
         new Setting(containerEl)
             .setName('Source Directory')
-            .setDesc('The directory from which to pick a random file from at start-up')
+            .setDesc('The directory from which to pick a random file from. If specified, "exclude directory" will be ignored')
             .addText(text => text
                 // TODO: Implement autocomplete for directories
                 .setPlaceholder('Enter the directory name. e.g. Journal, or Books')
@@ -27,5 +27,17 @@ export class SerendipitySettingTab extends PluginSettingTab {
                     this.plugin.settings.sourceDirectory = value;
                     await this.plugin.saveSettings();
                 }));
+
+        new Setting(containerEl)
+        .setName('Exclude Directory')
+        .setDesc('The directory to exclude from the random file picker. This will be ignored if "source directory" is specified')
+        .addText(text => text
+            // TODO: Implement autocomplete for directories
+            .setPlaceholder('Enter the directory name e.g. Work, Drafts')
+            .setValue(this.plugin.settings.excludeDirectory)
+            .onChange(async (value) => {
+                this.plugin.settings.excludeDirectory = value;
+                await this.plugin.saveSettings();
+            }));
     }
 }
