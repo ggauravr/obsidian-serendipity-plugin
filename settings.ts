@@ -14,8 +14,6 @@ export class SerendipitySettingTab extends PluginSettingTab {
 
         containerEl.empty();
 
-        containerEl.createEl('h2', { text: 'Serenditpity Settings' });
-
         new Setting(containerEl)
             .setName('Source Directory')
             .setDesc('The directory from which to pick a random file from. If specified, "exclude directory" will be ignored')

@@ -8,7 +8,8 @@ import {
     Plugin, 
     TAbstractFile, 
     TFile, 
-    TFolder } from 'obsidian';
+    TFolder,
+    normalizePath } from 'obsidian';
 import { SerendipitySettingTab } from './settings';
 
 interface SerendipityPluginSettings {
@@ -46,8 +47,8 @@ export default class SerendipityPlugin extends Plugin {
 
     async getRandomEntry() {
         let mdFilesInVault: TAbstractFile[];
-        const sourceDirectory = this.app.vault.getAbstractFileByPath(this.settings.sourceDirectory);  
-        const excludeDirectory = this.app.vault.getFolderByPath(this.settings.excludeDirectory)
+        const sourceDirectory = this.app.vault.getAbstractFileByPath(normalizePath(this.settings.sourceDirectory));
+        const excludeDirectory = this.app.vault.getFolderByPath(normalizePath(this.settings.excludeDirectory));
 
         if (!sourceDirectory || !(sourceDirectory instanceof TFolder)) {
             new Notice('Invalid source directory. Checking for excluded directory instead');
@@ -91,6 +92,7 @@ export default class SerendipityPlugin extends Plugin {
 
 class SerendipityModal extends Modal {
     private file: TAbstractFile;
+    private component: Component;
 
 	constructor(app: App, file: TAbstractFile) {
 		super(app);
@@ -98,12 +100,12 @@ class SerendipityModal extends Modal {
 	}
 
     async onOpen() {
-        const { contentEl } = this;
+        const { containerEl, contentEl } = this;
         const fileContents = this.file instanceof TFile ? await this.app.vault.read(this.file): '';
 
-        const header = contentEl.createDiv({ cls: 'modal-header' });
+        containerEl.addClass('serendipity-modal-container');
+        const header = contentEl.createDiv({cls: 'modal-header'});
 
-        // TODO: Beautify the buttons. They currently sit awkwardly next to each other in the footer
         const openCta = new ButtonComponent(header)    
         openCta.setButtonText('Open in vault')
             .onClick(() => {
@@ -118,31 +120,15 @@ class SerendipityModal extends Modal {
             });
         
         const contentContainer = contentEl.createDiv({ cls: 'markdown-preview' });
-        const component = new Component();
-        // TODO: Add 'components" as expected as the last argument. app console warns about potential memory issues of using "this"
-        MarkdownRenderer.render(this.app, fileContents, contentContainer, this.file.path, component);
 
-        const footerEl = contentEl.createDiv({ cls: 'modal-footer' });
-        // TODO: Beautify the buttons. They currently sit awkwardly next to each other in the footer
-        // const buttonComponent = new ButtonComponent(footerEl)
-            
-        // buttonComponent.setButtonText('Open in vault')
-        //     .onClick(() => {
-        //         this.app.workspace.getLeaf('tab').openFile(this.file);
-        //         this.close();
-        //     });
+        this.component = new Component();
+        MarkdownRenderer.render(this.app, fileContents, contentContainer, this.file.path, this.component);
     }
 
     onClose() {
         const { contentEl } = this;
         contentEl.empty();
-    }
 
-    onLoad() {
-
-    }
-
-    onUnload() {
-    
+        this.component.unload();
     }
 }

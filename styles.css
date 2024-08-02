@@ -1,17 +1,18 @@
-.modal {
+
+.serendipity-modal-container .modal {
     padding: 0
 }
 
-.modal-content {
+.serendipity-modal-container .modal-content {
     margin: 0;
     padding: 1.5em;
 }
 
-.modal-close-button {
+.serendipity-modal-container .modal-close-button {
     display: none;
 }
 
-.modal-header {
+.serendipity-modal-container .modal-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
