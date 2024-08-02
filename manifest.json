@@ -1,7 +1,7 @@
 {
 	"id": "serendipity",
 	"name": "Serendipity",
-	"version": "1.0.8",
+	"version": "1.0.9",
 	"minAppVersion": "1.6.7",
 	"description": "Forces serendipitous discoveries by displaying random notes from your vault each time you open the app",
 	"author": "Gaurav Ramesh",
